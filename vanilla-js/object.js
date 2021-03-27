@@ -38,3 +38,32 @@
 //this adalah keyword spesial yang didefinisikan secara otomatis pada setiap function atau object
 // this adalah window di scope global
 // new Halo();
+
+function Angkot(supir, trayek, penumpang, kas) {
+  this.supir = supir;
+  this.trayek = trayek;
+  this.penumpang = penumpang;
+  this.kas = kas;
+
+  this.penumpangNaik = (nama) => {
+    this.penumpang.push(nama);
+    return this.penumpang;
+  };
+
+  this.penumpangTurun = (nama, bayar) => {
+    if (this.penumpang.length === 0) {
+      console.log("Angkot masih kosong");
+      return false;
+    } else {
+      for (let i = 0; i < this.penumpang.length; i++) {
+        if (this.penumpang[i] == nama) {
+          this.penumpang[i] = undefined;
+          this.kas += bayar;
+          return this.penumpang;
+        }
+      }
+    }
+  };
+}
+
+let angkot1 = new Angkot("Sandhika", ["Cicaheum", "Cibiru"], [], 0);
