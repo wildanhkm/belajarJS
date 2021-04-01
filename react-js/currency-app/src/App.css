@@ -1,0 +1,33 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+h1 {
+  margin: 0 0 0.5rem 0;
+}
+
+.Input {
+  border: 1px solid #333;
+  border-radius: 0.3em;
+  padding: 0.25rem;
+  width: 8em;
+}
+
+select {
+  margin-left: 0.5rem;
+}
+
+.Equals {
+  font-weight: bold;
+  font-size: 2rem;
+}
