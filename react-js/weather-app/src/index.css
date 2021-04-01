@@ -97,3 +97,12 @@ main {
   font-weight: 700;
   text-shadow: 3px 3px rgba(50, 50, 70, 0.5);
 }
+
+@media only screen and (min-width: 1280px) {
+  .App {
+    background-image: url(./assets/cold-bg-big.jpg);
+  }
+  .App.Warm {
+    background-image: url(./assets/warm-bg-big.jpg);
+  }
+}
