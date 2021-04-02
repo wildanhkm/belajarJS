@@ -19,14 +19,14 @@ main {
 }
 
 .App {
-  background-image: url(./assets/cold-bg.svg);
+  background-image: url(assets/cold-bg.jpg);
   background-size: cover;
   background-position: bottom;
   transition: 0.5s ease-in-out;
 }
 
 .App.Warm {
-  background-image: url(./assets/warm-bg.svg);
+  background-image: url(assets/warm-bg.jpg);
   transition: 0.5s ease-in-out;
 }
 
@@ -101,11 +101,11 @@ main {
 
 @media only screen and (min-width: 1280px) {
   .App {
-    background-image: url(./assets/cold-bg-big.svg);
+    background-image: url(assets/cold-bg-big.jpg);
     transition: 0.5s ease-in-out;
   }
   .App.Warm {
-    background-image: url(./assets/warm-bg-big.svg);
+    background-image: url(assets/warm-bg-big.jpg);
     transition: 0.5s ease-in-out;
   }
 }
