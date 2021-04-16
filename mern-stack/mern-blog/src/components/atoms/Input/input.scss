@@ -1,0 +1,16 @@
+.input-container {
+  .label {
+    font-size: 16px;
+    color: #2d2d2d;
+    margin: 0 0 6px 0;
+  }
+
+  .form-input {
+    border: 1px solid grey;
+    padding: 0.8em;
+    border-radius: 8px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
