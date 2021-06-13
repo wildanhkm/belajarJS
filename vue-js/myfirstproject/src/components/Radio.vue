@@ -11,6 +11,7 @@
         <label for="radio">{{ value3 }}</label>
       </li>
     </ul>
+    <p>Subcomponents</p>
     <ul id="subcomponents">
       <li>
         <input type="radio" name="radio" />
