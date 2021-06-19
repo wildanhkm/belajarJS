@@ -10,6 +10,11 @@
         margin: 5%;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
+      .active {
+        background-color: salmon;
+        border: 1px solid salmon;
+        padding: 5px;
+      }
     </style>
   </head>
   <body>
@@ -19,11 +24,56 @@
         <h1 v-text="name.toUpperCase()"></h1>
         <h2 v-html="link"></h2>
         <p>The progressive JavaScript framework</p>
+        <button @click="handleClick">Number + 1</button>
+        <p v-text="number"></p>
+        <p>This number is {{getNumberInfo}}</p>
+        <button
+          v-bind:class="{active: menu === 'home'}"
+          @click="handleClass('home')"
+        >
+          Home
+        </button>
+        <button
+          v-bind:class="{active: menu === 'about'}"
+          @click="handleClass('about')"
+        >
+          About
+        </button>
+        <button
+          v-bind:class="{active: menu === 'blog'}"
+          @click="handleClass('blog')"
+        >
+          Blog
+        </button>
+        <h3>Course Lists {{course.length}}</h3>
+        <template v-if="course.length">
+          <ul>
+            <li v-for="(data, index) in course">{{index+1}} - {{data}}</li>
+          </ul>
+        </template>
+        <li v-else>Course is not available yet 😪</li>
+        <p>
+          <label for="">
+            <input type="checkbox" value="React" v-model="course" />React
+          </label>
+          <label for="">
+            <input type="checkbox" value="Vue" v-model="course" />Vue
+          </label>
+          <label for="">
+            <input type="checkbox" value="Angular" v-model="course" />Angular
+          </label>
+        </p>
+        <h3>Perulangan 1 - 5</h3>
+        <p v-for="x in 5" v-text="x"></p>
+
+        <h3>Find even numbers</h3>
+        <p v-for="x in findEven(array)" v-text="x"></p>
       </header>
       <footer>
         <p>Copyright &copy; 2021</p>
       </footer>
     </div>
+    <!-- Import Vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script>
       const vm = new Vue({
@@ -34,9 +84,12 @@
           qty: 1,
           first: "Wildan ",
           last: "Hakim",
-          number: 3,
-          link: "<a href=''>My Linkedin</a>",
+          number: 1,
+          link: "<a href='#'>My Linkedin</a>",
           image: "images/logo.png",
+          menu: "home",
+          course: [],
+          array: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
         },
         methods: {
           getName: function () {
@@ -45,6 +98,17 @@
           setName: function (newName) {
             this.name = newName;
             return this.getName();
+          },
+          handleClick: function () {
+            this.number++;
+          },
+          handleClass: function (prop) {
+            return (this.menu = prop);
+          },
+          findEven(prop) {
+            return prop.filter((nums) => {
+              return nums % 2 === 0;
+            });
           },
         },
         computed: {
