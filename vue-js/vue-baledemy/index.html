@@ -23,28 +23,38 @@
         <img :src="image" alt="vue logo" width="125" />
         <h1 v-text="name.toUpperCase()"></h1>
         <h2 v-html="link"></h2>
-        <p>The progressive JavaScript framework</p>
+        <h3>Form Submit</h3>
+        <p>
+          <input
+            type="text"
+            placeholder="Course Name"
+            v-on:keyup.enter="submit"
+          />
+        </p>
         <button @click="handleClick">Number + 1</button>
         <p v-text="number"></p>
         <p>This number is {{getNumberInfo}}</p>
-        <button
+        <a
+          href="#"
           v-bind:class="{active: menu === 'home'}"
-          @click="handleClass('home')"
+          @click.prevent="handleClass('home')"
         >
           Home
-        </button>
-        <button
+        </a>
+        <a
+          href="#"
           v-bind:class="{active: menu === 'about'}"
-          @click="handleClass('about')"
+          @click.prevent="handleClass('about')"
         >
           About
-        </button>
-        <button
+        </a>
+        <a
+          href="#"
           v-bind:class="{active: menu === 'blog'}"
-          @click="handleClass('blog')"
+          @click.prevent="handleClass('blog')"
         >
           Blog
-        </button>
+        </a>
         <h3>Course Lists {{course.length}}</h3>
         <template v-if="course.length">
           <ul>
@@ -92,23 +102,28 @@
           array: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
         },
         methods: {
-          getName: function () {
+          getName() {
             return `Hey ${this.name}!`;
           },
-          setName: function (newName) {
+          setName(newName) {
             this.name = newName;
             return this.getName();
           },
-          handleClick: function () {
+          handleClick() {
             this.number++;
           },
-          handleClass: function (prop) {
+          handleClass(prop) {
             return (this.menu = prop);
           },
           findEven(prop) {
             return prop.filter((nums) => {
               return nums % 2 === 0;
             });
+          },
+          submit(event) {
+            let text = event.target.value;
+            this.course.unshift(text);
+            event.target.value = "";
           },
         },
         computed: {
