@@ -19,34 +19,53 @@
   </head>
   <body>
     <div id="app">
-      <header-component></header-component>
-      <course />
-      <footer-component></footer-component>
+      <header-component
+        title="Welcome to Vue JS"
+        image="images/logo.png"
+      ></header-component>
+      <home></home>
+      <course
+        v-bind:items="course"
+        v-on:submit="newCourse"
+        v-on:delete="deleteCourse"
+      ></course>
+      <footer-component>
+        <p>Copyright &copy; 2021</p>
+      </footer-component>
     </div>
     <!-- Import Vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script>
+      // Local registration component
+      const Home = {
+        template: `
+          <div>
+            <h2>Home from local registered component</h2>
+          </div>`,
+      };
       // Vue.Component sebelum instant object Vue
       Vue.component("header-component", {
+        props: ["title", "image"],
         template: `
             <header>
-                <img src="images/logo.png" alt="vue logo" width="125" />
-                <p>The Progressive JavaScript framework</p>
+                <img :src="image" alt="vue logo" width="175" />
+                <h1>{{title}}</h1>
                 <p v-text="msg"></p>
             </header>`,
         data: function () {
           return {
-            msg: "Hello Vue Component",
+            msg: "Hello this is Component",
           };
         },
       });
       Vue.component("footer-component", {
         template: `
-            <footer>
-                <p>Copyright &copy; 2021</p>
-            </footer>`,
+          <footer>
+            <slot></slot>
+          </footer>`,
       });
       Vue.component("course", {
+        props: ["items"],
         template: `
           <main>
             <h3>Add Course</h3>
@@ -54,38 +73,46 @@
                 <input
                     type="text"
                     placeholder="Course Name"
-                    v-on:keyup.enter="submit"
-                    v-model="newCourse"
+                    v-on:keyup.enter="$emit('submit', $event)"
+                    
                 />
             </p>
             <hr />
-            <h3>Course Lists</h3>
-            <template v-if="course.length">
+            <h3>Course Lists {{items.length}}</h3>
+            <template v-if="items.length">
                 <ul>
-                    <li v-for="(data, index) in course">{{index+1}} - {{data}}</li>
+                    <li v-for="(data, index) in items">{{index+1}} - {{data}}
+                      <a href="" v-on:click.prevent="$emit('delete', index)">Delete</a>  
+                    </li>
                 </ul>
             </template>
             <li v-else>Course is not available yet 😪</li>
         </main>
           `,
         data: function () {
-          return {
-            newCourse: "",
-            course: [],
-          };
+          return {};
         },
-        methods: {
-          submit(event) {
-            let text = event.target.value;
-            this.course.unshift(this.newCourse);
-            this.newCourse = "";
-          },
-        },
+        methods: {},
       });
       const vm = new Vue({
         el: "#app",
-        data: {},
+        components: {
+          home: Home,
+        },
+        data: {
+          course: ["VueJS", "Vanilla JS"],
+        },
         computed: {},
+        methods: {
+          deleteCourse(index) {
+            this.course.splice(index, 1);
+          },
+          newCourse(event) {
+            const text = event.target.value;
+            this.course.unshift(text);
+            event.target.value = "";
+          },
+        },
       });
     </script>
   </body>
