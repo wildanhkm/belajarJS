@@ -15,6 +15,15 @@
         border: 1px solid salmon;
         padding: 5px;
       }
+      .input-group {
+        margin-bottom: 5px;
+      }
+      .error {
+        color: red;
+      }
+      ul > li {
+        list-style-type: none;
+      }
     </style>
   </head>
   <body>
@@ -75,20 +84,24 @@
             <h3>Add Course</h3>
 
             <form v-on:submit.prevent="newCourse">
-              <p>
+              <div class="input-group">
+                  <label>Course name</label>
                   <input
                       type="text"
                       placeholder="Course Name"
                       v-model="course.title"
                   />
-              </p>
+                  <div class="error" v-if="error.title"><small>{{error.title}}</small></div>
+              </div>
               <div class="input-group">
                 <label>Description</label>
                 <textarea v-model="course.description"></textarea>
+                <div class="error" v-if="error.description"><small>{{error.description}}</small></div>
               </div>
               <div class="input-group">
+                <p><img :src="previewImg" v-if="previewImg" width="200"/></p>
                 <label>Insert an image</label>
-                <input type="file"/>
+                <input type="file" ref="uploadImg" v-on:change="upload"/>
               </div>
               <button type="submit">Submit</button>
             </form>
@@ -97,8 +110,12 @@
             <h3>Course Lists {{items.length}}</h3>
             <template v-if="items.length">
                 <ul>
-                    <li v-for="(data, index) in items">{{index+1}} - {{data.title}}
-                      <a href="" v-on:click.prevent="$emit('delete', data.id)">Delete</a>
+                    <li v-for="(data, index) in items">
+                      <img :src="'images/'+data.image" width="200"/>
+                      <p>
+                        {{index+1}} - {{data.title}}
+                        <a href="" v-on:click.prevent="$emit('delete', data.id)">Delete</a>
+                      </p>
                     </li>
                 </ul>
             </template>
@@ -108,22 +125,54 @@
         data: function () {
           return {
             course: { title: "", description: "", image: "" },
+            previewImg: "",
+            error: {
+              title: "",
+              description: "",
+            },
           };
         },
         methods: {
           newCourse: function () {
-            const data = {
-              id: uuidv4(),
-              title: this.course.title,
-              description: this.course.description,
-              image: null,
-            };
+            this.error.title = "";
+            this.error.description = "";
+            if (this.course.title === "") {
+              this.error.title = "Course name is required";
+            }
 
-            this.$emit("submit-course", data);
-            this.course.title = "";
-            this.course.description = "";
+            if (this.course.description === "") {
+              this.error.description = "Course description is required";
+            }
+
+            if (this.course.title && this.course.description) {
+              const data = {
+                id: uuidv4(),
+                title: this.course.title,
+                description: this.course.description,
+                image: this.course.image,
+              };
+
+              this.$emit("submit-course", data);
+              this.course.title = "";
+              this.course.description = "";
+              this.course.image = "";
+              this.previewImg = "";
+              this.$refs.uploadImg.value = "";
+            }
+          },
+          upload: function (event) {
+            const imageName = event.target.files[0].name;
+            this.course.image = imageName;
+            this.previewImg = URL.createObjectURL(event.target.files[0]);
           },
         },
+      };
+
+      const NotFound = {
+        template: `
+          <div>
+            <h2>404: Page not found</h2>
+          </div>`,
       };
       // Vue.component sebelum instant object Vue
       // Vue.component untuk registrasi component global
@@ -153,6 +202,7 @@
         { path: "/", component: Home },
         { path: "/about", component: About },
         { path: "/course", component: Course },
+        { path: "*", component: NotFound },
       ];
 
       const router = new VueRouter({ mode: "history", routes });
@@ -164,20 +214,10 @@
           home: Home,
         },
         data: {
-          course: [
-            {
-              id: "1",
-              title: "Vue JS",
-              description: "The progressive JavaScript framework",
-              image: "vue-js.png",
-            },
-            {
-              id: "2",
-              title: "React JS",
-              description: "A JavaScript library for building user interfaces",
-              image: "react-js.png",
-            },
-          ],
+          course: [],
+        },
+        created() {
+          this.course = JSON.parse(localStorage.getItem("course")) || [];
         },
         computed: {},
         methods: {
@@ -186,6 +226,7 @@
           },
           newCourse(data) {
             this.course.push(data);
+            localStorage.setItem("course", JSON.stringify(this.course));
           },
         },
       });
