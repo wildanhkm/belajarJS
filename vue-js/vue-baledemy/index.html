@@ -60,6 +60,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
     <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
       // Local registration component
@@ -111,10 +112,11 @@
             <template v-if="items.length">
                 <ul>
                     <li v-for="(data, index) in items">
-                      <img :src="'images/'+data.image" width="200"/>
+                      <img :src="image_url(data.image)" width="200"/>
                       <p>
                         {{index+1}} - {{data.title}}
                         <a href="" v-on:click.prevent="$emit('delete', data.id)">Delete</a>
+                        <router-link :to="'/course/' +data.id">See detail</router-link>
                       </p>
                     </li>
                 </ul>
@@ -165,6 +167,9 @@
             this.course.image = imageName;
             this.previewImg = URL.createObjectURL(event.target.files[0]);
           },
+          image_url: function (image) {
+            return "../images/" + image;
+          },
         },
       };
 
@@ -173,6 +178,34 @@
           <div>
             <h2>404: Page not found</h2>
           </div>`,
+      };
+
+      const courseDetail = {
+        template: `<div>
+            <img :src="image_url(course.image)" width="200"/>
+            <h3>{{course.title}}</h3>
+            <p>{{course.description}}</p>
+            <router-link to="/course">Back</router-link>
+          </div>`,
+        data() {
+          return {
+            course: {},
+          };
+        },
+        created() {
+          this.filterCourse();
+        },
+        methods: {
+          filterCourse() {
+            let course = JSON.parse(localStorage.getItem("course"));
+            let id = this.$route.params.id;
+            let item = course.filter((c) => c.id == id);
+            this.course = item[0];
+          },
+          image_url: function (image) {
+            return "../images/" + image;
+          },
+        },
       };
       // Vue.component sebelum instant object Vue
       // Vue.component untuk registrasi component global
@@ -202,6 +235,10 @@
         { path: "/", component: Home },
         { path: "/about", component: About },
         { path: "/course", component: Course },
+        {
+          path: "/course/:id",
+          component: courseDetail,
+        },
         { path: "*", component: NotFound },
       ];
 
@@ -218,15 +255,39 @@
         },
         created() {
           this.course = JSON.parse(localStorage.getItem("course")) || [];
+          console.log("created");
+        },
+        beforeCreate() {
+          console.log("before create");
+        },
+        mounted() {
+          console.log("mounted");
+        },
+        beforeUpdate() {
+          console.log("before update");
+        },
+        updated() {
+          console.log("updated");
         },
         computed: {},
         methods: {
           deleteCourse(id) {
             this.course = this.course.filter((item) => item.id != id);
+            localStorage.setItem("course", JSON.stringify(this.course));
+            swal({
+              text: "Course deleted",
+              icon: "warning",
+            });
           },
           newCourse(data) {
             this.course.push(data);
             localStorage.setItem("course", JSON.stringify(this.course));
+
+            swal({
+              title: data.title,
+              text: "Course saved",
+              icon: "success",
+            });
           },
         },
       });
