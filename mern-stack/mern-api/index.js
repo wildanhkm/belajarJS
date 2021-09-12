@@ -29,7 +29,9 @@ app.use((error, req, res, next) => {
 
 mongoose
   .connect(
-    "mongodb+srv://wildan:JctcEgbk5unmAmhF@cluster0.drthn.mongodb.net/blog?retryWrites=true&w=majority"
+    "mongodb+srv://wildan:" +
+      process.env.MONGO_PW +
+      "@cluster0.drthn.mongodb.net/blog?retryWrites=true&w=majority"
   )
   .then(() => {
     app.listen(4000, () => console.log("Connection success"));
