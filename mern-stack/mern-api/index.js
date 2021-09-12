@@ -1,7 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 const app = express();
-const productRoutes = require("./src/routes/products");
+const authRoutes = require("./src/routes/auth");
+const blogRoutes = require("./src/routes/blog");
 
 app.use(bodyParser.json()); //* type JSON
 
@@ -15,5 +17,23 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/", productRoutes);
-app.listen(4000);
+app.use("/v1/auth", authRoutes);
+app.use("/v1/blog", blogRoutes);
+
+app.use((error, req, res, next) => {
+  const status = error.errorStatus || 500;
+  const message = error.message;
+  const data = error.data;
+  res.status(status).json({ message: message, data: data });
+});
+
+mongoose
+  .connect(
+    "mongodb+srv://wildan:JctcEgbk5unmAmhF@cluster0.drthn.mongodb.net/blog?retryWrites=true&w=majority"
+  )
+  .then(() => {
+    app.listen(4000, () => console.log("Connection success"));
+  })
+  .catch((error) => {
+    console.log(error);
+  });

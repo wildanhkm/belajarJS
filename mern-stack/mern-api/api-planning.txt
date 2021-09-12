@@ -41,9 +41,41 @@ error response:
 
 [2] - Login
 {root.api}/{version}/auth/login
+==============================================================================================
 
 GROUP: Blog
 [1] - Create Blog Post
+[POST] : {root.api}/{version}/blog/post
+
+req: 
+{
+    "title":"Title Blog",
+    "image":"imagefile.png",
+    "body":"lorem ipsum dolor sit amet consectetur adipiscing elit"
+}
+
+res:
+{
+    "message":"Create Blog Post Success",
+    "data":{
+        "post_id":1,
+        "title":"Title Blog",
+        "image":"imagefile.png",
+        "body":"lorem ipsum dolor sit amet consectetur adipiscing elit",
+        "created_at":"12/09/2021",
+        "author":{
+            "uid":1,
+            "name":"Testing"
+        }
+    }
+}
+
+err-response:
+201 -> Blog Post berhasil dibuat
+400 -> Input yang anda dimasukkan tidak valid
+=============================================================================================================
+
+GROUP: Blog
 [2] - Get Blog Post
 [3] - Update Blog Post
 [4] - Delete Blog Post
