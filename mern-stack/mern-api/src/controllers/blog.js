@@ -48,6 +48,25 @@ exports.getAllBlogPosts = (req, res, next) => {
         .json({ message: "Blog Posts successfully called", data: result });
     })
     .catch((error) => {
-      next(error)
+      next(error);
+    });
+};
+
+exports.getBlogPostById = (req, res, next) => {
+  const postId = req.params.postId;
+  BlogPost.findById(postId)
+    .then((result) => {
+      if (!result) {
+        const error = new Error("Blog Post not found");
+        error.errorStatus = 404;
+        throw error;
+      }
+      res.status(200).json({
+        message: "Blog Post data successfully called",
+        data: result,
+      });
+    })
+    .catch((error) => {
+      next(error);
     });
 };
