@@ -9,15 +9,27 @@ router.post(
   [
     body("title")
       .isLength({ min: 5 })
-      .withMessage("Input Title anda tidak sesuai, minimum 5 karakter"),
+      .withMessage("Input Title is not valid, required minimum 5 characters"),
     body("body")
       .isLength({ min: 5 })
-      .withMessage("Input Body anda tidak sesuai, minimum 5 karakter"),
+      .withMessage("Input Body is not valid, required minimum 5 characters"),
   ],
   blogController.createBlogPost
 );
 
 router.get("/posts", blogController.getAllBlogPosts);
 router.get("/post/:postId", blogController.getBlogPostById);
+router.put(
+  "/post/:postId",
+  [
+    body("title")
+      .isLength({ min: 5 })
+      .withMessage("Input Title is not valid, required minimum 5 characters"),
+    body("body")
+      .isLength({ min: 5 })
+      .withMessage("Input Body is not valid, required minimum 5 characters"),
+  ],
+  blogController.updateBlogPost
+);
 
 module.exports = router;
