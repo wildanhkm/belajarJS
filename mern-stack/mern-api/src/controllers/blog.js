@@ -52,7 +52,7 @@ exports.getAllBlogPosts = (req, res, next) => {
     .then((count) => {
       totalItems = count;
       return BlogPost.find()
-        .skip((parseInte(currentPage) - 1) * parseInt(perPage))
+        .skip((parseInt(currentPage) - 1) * parseInt(perPage))
         .limit(parseInt(perPage));
     })
     .then((result) => {
