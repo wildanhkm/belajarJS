@@ -1,39 +1,24 @@
-import React, { useState } from "react";
-import Axios from "axios";
+import React from "react";
 import { Button, Input, Upload, TextArea, Gap, Link } from "../../components";
 import "./createBlog.scss";
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { postToAPI, setForm, setImagePreview } from "../../config/redux/action";
 
 const CreateBlog = () => {
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [image, setImage] = useState("");
-  const [imagePreview, setImagePreview] = useState(null);
+  const { form, imgPreview } = useSelector((state) => state.createBlogReducer);
+  const { title, body } = form;
+  const dispatch = useDispatch();
   const history = useHistory();
 
   const onSubmit = () => {
-    const data = new FormData();
-    data.append("title", title);
-    data.append("body", body);
-    data.append("image", image);
-
-    Axios.post("http://localhost:4000/v1/blog/post", data, {
-      headers: {
-        "content-type": "multipart/form-data",
-      },
-    })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    dispatch(postToAPI(form));
   };
 
   const onImageUpload = (e) => {
     const file = e.target.files[0];
-    setImage(file);
-    setImagePreview(URL.createObjectURL(file));
+    dispatch(setForm("image", file));
+    dispatch(setImagePreview(URL.createObjectURL(file)));
   };
   return (
     <div className="blog-post">
@@ -42,10 +27,13 @@ const CreateBlog = () => {
       <Input
         label="Post Title"
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={(e) => dispatch(setForm("title", e.target.value))}
       />
-      <Upload onChange={(e) => onImageUpload(e)} img={imagePreview} />
-      <TextArea value={body} onChange={(e) => setBody(e.target.value)} />
+      <Upload onChange={(e) => onImageUpload(e)} img={imgPreview} />
+      <TextArea
+        value={body}
+        onChange={(e) => dispatch(setForm("body", e.target.value))}
+      />
       <Gap height={20} />
       <div className="button-container">
         <Button title="Save" onClick={onSubmit} />
